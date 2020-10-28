@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 from flask import Flask, Response, jsonify
 from slack import WebClient
 import hashlib
@@ -29,11 +28,27 @@ def get_value(key_str):
 
 @FLASK_APP.route("/keyval/<string:key_str>/<string:val>", methods=["PUT"])
 def put_value(key_str, val):
-    return jsonify(key=key_str, value=val, command="", result=True, error=""), 200
+    x = "PUT " + key_str + "/" + val
+    if REDIS.exists(key_str, val):
+        return jsonify(key=key_str, value=val, command=x, result=False, error="Unable to retrieve pair: Key does not exist."), 409
+    check = REDIS.set(key_str, val)
+    if check is False:
+        return jsonify(key=key_str, value=val, command=x, result=False, error="Invalid request"), 400
+    else:
+        return jsonify(key=key_str, value=val, command=x, result=True, error=""), 200
 
 @FLASK_APP.route("/keyval/<string:key_str>", methods=["DELETE"])
 def delete_value(key_str):
-    return jsonify(key=key_str, value=val, command="", result=True, error=""), 200
+    cmd = "DELETE " + key_str
+    if REDIS.exists(key_str):
+        REDIS.delete(key_str)
+    else:
+        return jsonify(key=key_str, command=cmd, result=False, error="Unable to retrieve pair: Key does not exist."), 409
+    
+    if REDIS.exists(key_str):
+        return jsonify(key=key_str, command=cmd, result=False, error="Unable to delete value: I/O Error!"), 400
+    else:
+        return jsonify(key=key_str, command=cmd, result=True, error=""), 200
 
 @FLASK_APP.route("/md5/<string:data_to_hash>")
 def calc_md5(data_to_hash):
