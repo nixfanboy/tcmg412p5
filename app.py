@@ -115,7 +115,7 @@ def calc_is_prime(number):
 
 @FLASK_APP.route("/slack-alert/<string:message>")
 def post_slack_alert(message):
-    response = SLACK_APP.chat_postMessage(channel='#group-4', text=message)
+    response = SLACK_APP.chat_postMessage(channel='#testing-day', text=message)
     return jsonify(input=message, output=response["ok"])
 
 if __name__ == "__main__":
