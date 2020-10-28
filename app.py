@@ -22,7 +22,7 @@ def post_value(key_str, val):
 @FLASK_APP.route("/keyval/<string:key_str>", methods=["GET"])
 def get_value(key_str):
     method = "GET " + key_str
-    if !REDIS.exists(key_str):
+    if REDIS.exists(key_str) == False:
         return jsonify(key=key_str, value=val, command=method, result=False, error="Unable to retrieve pair: Key does not exist."). 409
     val = REDIS.get(key_str)
     return jsonify(key=key_str, value=val, command=method, result=True, error=""), 200
