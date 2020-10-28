@@ -22,7 +22,7 @@ def post_value(key_str, val):
 def get_value(key_str):
     method = "GET" + key_str
     if REDIS.exists(key_str):
-        return jsonify(key=key_str, value=val, command=method, result=False, error="Unable to retrieve pair: Key does not exist."). 409
+        return jsonify(key=key_str, value=val, command=method, result=False, error="Unable to retrieve pair: Key does not exist."). 404
     code = REDIS.get(key_str)
     if code is False:
         return jsonify(key=key_str, value=val, command=method, result=False, error="Unable to retrieve pair: Invalid request."), 400
@@ -31,8 +31,8 @@ def get_value(key_str):
 @FLASK_APP.route("/keyval/<string:key_str>/<string:val>", methods=["PUT"])
 def put_value(key_str, val):
     x = "PUT" + key_str + "/" + val
-    if REDIS.exists(key_str):
-        return jsonify(key=key_str, command=x, result=False, error="Key does not exist."), 404
+    if REDIS.exists(key_str, val):
+        return jsonify(key=key_str, value=val, command=x, result=False, error="Key does not exist."), 404
     check = REDIS.put(key_str, val)
     if check is false:
         return jsonify(key=key_str, value=val, command=x, result=False, error="Invalid request"), 400
