@@ -29,7 +29,14 @@ def put_value(key_str, val):
 
 @FLASK_APP.route("/keyval/<string:key_str>", methods=["DELETE"])
 def delete_value(key_str):
-    return jsonify(key=key_str, value=val, command="", result=True, error=""), 200
+    cmd = "DELETE " + key_str
+    if REDIS.exists(key_str):
+        REDIS.delete(key_str)
+    return_code = REDIS.set(key_str)
+        return jsonify(key=key_str, command=cmd, result=False, error="I/O Error!"), 400
+    else:
+        return jsonify(key=key_str, command=cmd, result=False, error="Key does not exist."), 404
+    return jsonify(key=key_str, command=cmd, result=True, error=""), 200
 
 @FLASK_APP.route("/md5/<string:data_to_hash>")
 def calc_md5(data_to_hash):
