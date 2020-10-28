@@ -30,7 +30,14 @@ def get_value(key_str):
 
 @FLASK_APP.route("/keyval/<string:key_str>/<string:val>", methods=["PUT"])
 def put_value(key_str, val):
-    return jsonify(key=key_str, value=val, command="", result=True, error=""), 200
+    x = "PUT" + key_str + "/" + val
+    if REDIS.exists(key_str):
+        return jsonify(key=key_str, command=x, result=False, error="Key does not exist."), 404
+    check = REDIS.put(key_str, val)
+    if check is false:
+        return jsonify(key=key_str, value=val, command=x, result=False, error="Invalid request"), 400
+    else:
+        return jsonify(key=key_str, value=val, command=x, result=True, error=""), 200
 
 @FLASK_APP.route("/keyval/<string:key_str>", methods=["DELETE"])
 def delete_value(key_str):
