@@ -31,12 +31,11 @@ def get_value(key_str):
 def put_value(key_str, val):
     x = "PUT " + key_str + "/" + val
     if REDIS.exists(key_str, val):
-        return jsonify(key=key_str, value=val, command=x, result=False, error="Unable to retrieve pair: Key does not exist."), 409
-    check = REDIS.set(key_str, val)
-    if check is False:
-        return jsonify(key=key_str, value=val, command=x, result=False, error="Invalid request"), 400
-    else:
-        return jsonify(key=key_str, value=val, command=x, result=True, error=""), 200
+        check = REDIS.set(key_str, val)
+        if check is False:
+            return jsonify(key=key_str, value=val, command=x, result=False, error="Invalid request"), 400
+        else:
+            return jsonify(key=key_str, value=val, command=x, result=True, error=""), 200
 
 @FLASK_APP.route("/keyval/<string:key_str>", methods=["DELETE"])
 def delete_value(key_str):
