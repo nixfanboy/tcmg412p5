@@ -129,6 +129,6 @@ if __name__ == "__main__":
         print("Connecting to Slack App with Key ", SLACK_KEY)
         SLACK_APP = WebClient(SLACK_KEY)
     print("Connecting to REDIS Server @ 127.0.0.1:6379")
-    REDIS = redis.Redis()
+    REDIS = redis.Redis(host="172.18.0.3")
     print("Launching Flask App.")
     FLASK_APP.run(host="0.0.0.0")
