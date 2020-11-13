@@ -37,7 +37,7 @@ def put_value(key_str, val):
         else:
             return jsonify(key=key_str, value=val, command=x, result=True, error=""), 200
     else:
-        return jsonify(key=key_str, value=val, command=x, result=False, error="Key already exists"), 409
+        return jsonify(key=key_str, value=val, command=x, result=False, error="Key does not exist yet!"), 409
 
 @FLASK_APP.route("/keyval/<string:key_str>", methods=["DELETE"])
 def delete_value(key_str):
